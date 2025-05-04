@@ -3,6 +3,21 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchLaunchById, fetchRocketById } from "../api/spacex";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Container,
+  Paper,
+  Title,
+  Text,
+  Group,
+  Badge,
+  Button,
+  Loader,
+  Grid,
+  Stack,
+  Anchor,
+  Box,
+  useMantineTheme,
+} from "@mantine/core";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -10,6 +25,7 @@ const fadeInUp = {
 };
 
 export default function ResourceDetail() {
+  const theme = useMantineTheme();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -27,219 +43,200 @@ export default function ResourceDetail() {
 
   if (loadingLaunch)
     return (
-      <div className="flex justify-center items-center h-64">
-        <motion.svg
-          className="h-12 w-12 text-indigo-600"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          aria-label="Loading spinner"
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v8H4z"
-          ></path>
-        </motion.svg>
-      </div>
+      <Container size="sm" my="xl" style={{ height: 256 }}>
+        <Group position="center" align="center" style={{ height: "100%" }}>
+          <Loader size="xl" color={theme.colors.indigo[6]} />
+        </Group>
+      </Container>
     );
 
   if (!launch)
     return (
-      <motion.div
-        className="max-w-3xl mx-auto mt-16 p-6 bg-red-50 border border-red-300 rounded-lg text-center text-red-700 font-semibold shadow-md"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        Launch not found
-      </motion.div>
+      <Container size="sm" my="xl">
+        <Paper
+          shadow="md"
+          radius="md"
+          p="xl"
+          withBorder
+          style={{ textAlign: "center", backgroundColor: theme.colors.red[0] }}
+        >
+          <Text color={theme.colors.red[7]} weight={700} size="lg">
+            Launch not found
+          </Text>
+        </Paper>
+      </Container>
     );
 
   return (
-    <motion.div
-      className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl border border-gray-100 p-10"
-      initial="hidden"
-      animate="visible"
-      variants={fadeInUp}
-    >
-      <nav className="text-sm mb-6" aria-label="Breadcrumb">
-        <ol className="list-reset flex text-gray-600">
-          <li>
-            <Link
+    <Container size="md" my="xl">
+      <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
+        <Paper shadow="xl" radius="md" p="xl" withBorder mt={90}>
+          <Group spacing={4} mb="md" aria-label="Breadcrumb" role="navigation">
+            <Anchor
+              component={Link}
               to="/resources"
-              className="hover:text-indigo-600 font-semibold underline"
+              weight={600}
+              color={theme.colors.indigo[7]}
+              underline
+              sx={{ "&:hover": { color: theme.colors.indigo[9] } }}
             >
               Launches
-            </Link>
-          </li>
+            </Anchor>
+            <Text>/</Text>
+            <Text weight={700} color={theme.colors.dark[7]}>
+              {launch.name}
+            </Text>
+          </Group>
 
-          <li>
-            <span className="mx-2">/</span>
-          </li>
-          <li className="text-gray-900 font-semibold">{launch.name}</li>
-        </ol>
-      </nav>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+          >
+            <Title order={2} mb="sm" weight={900} color={theme.colors.dark[7]}>
+              {launch.name}
+            </Title>
+          </motion.div>
 
-      <motion.h2
-        className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-      >
-        {launch.name}
-      </motion.h2>
-      <motion.p
-        className="text-gray-500 text-sm mb-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-      >
-        Date:{" "}
-        <time dateTime={launch.date_utc} className="font-medium text-gray-700">
-          {new Date(launch.date_utc).toLocaleString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </time>
-      </motion.p>
-
-      <motion.section
-        className="mb-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-      >
-        <h3 className="text-xl font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">
-          Launch Details
-        </h3>
-        <p className="text-gray-700 leading-relaxed min-h-[50px]">
-          {launch.details || (
-            <span className="italic text-gray-400">No details available.</span>
-          )}
-        </p>
-      </motion.section>
-
-      <section className="mb-6">
-        <AnimatePresence>
-          {loadingRocket ? (
-            <motion.div
-              key="loading-rocket"
-              className="flex justify-center items-center h-20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <motion.svg
-                className="h-10 w-10 text-indigo-600"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                aria-label="Loading spinner"
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <Text color="dimmed" size="sm" mb="lg">
+              Date:{" "}
+              <time
+                dateTime={launch.date_utc}
+                style={{ fontWeight: 600, color: theme.colors.dark[7] }}
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8H4z"
-                ></path>
-              </motion.svg>
-            </motion.div>
-          ) : rocket ? (
-            <motion.div
-              key="rocket-details"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.5 }}
+                {new Date(launch.date_utc).toLocaleString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </time>
+            </Text>
+          </motion.div>
+          <motion.section
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            style={{ marginBottom: theme.spacing.xl }}
+          >
+            <Title order={4} mb="sm" weight={700} color={theme.colors.dark[7]}>
+              Launch Details
+            </Title>
+            <Text
+              color={
+                launch.details ? theme.colors.dark[7] : theme.colors.gray[5]
+              }
+              size="md"
+              style={{ minHeight: 50 }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-gray-800">
-                  Rocket Details
-                </h3>
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                    rocket.active
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
+              {launch.details || <em>No details available.</em>}
+            </Text>
+          </motion.section>
+
+          <section>
+            <AnimatePresence>
+              {loadingRocket ? (
+                <motion.div
+                  key="loading-rocket"
+                  style={{ height: 80 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                 >
-                  {rocket.active ? "Active" : "Inactive"}
-                </span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Name</h4>
-                  <p>{rocket.name}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Type</h4>
-                  <p>{rocket.type}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Country</h4>
-                  <p>{rocket.country}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Company</h4>
-                  <p>{rocket.company}</p>
-                </div>
-                <div className="sm:col-span-2">
-                  <h4 className="font-semibold text-gray-900 mb-1">
-                    Description
-                  </h4>
-                  <p className="text-gray-600 leading-relaxed">
-                    {rocket.description}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() =>
-                  navigate(`/rocket/${rocket.id}`, {
-                    state: { launchId: launch.id, launchName: launch.name },
-                  })
-                }
-                className="mt-6 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
-                aria-label={`View full details for rocket ${rocket.name}`}
-              >
-                View Full Rocket Details
-              </button>
-            </motion.div>
-          ) : (
-            <motion.p
-              key="no-rocket-info"
-              className="text-gray-500 italic"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              No rocket information available.
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </section>
-    </motion.div>
+                  <Group
+                    position="center"
+                    align="center"
+                    style={{ height: "100%" }}
+                  >
+                    <Loader size="lg" color={theme.colors.indigo[6]} />
+                  </Group>
+                </motion.div>
+              ) : rocket ? (
+                <motion.div
+                  key="rocket-details"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Group position="apart" mb="md" align="center">
+                    <Title order={4} weight={700} color={theme.colors.dark[7]}>
+                      Rocket Details
+                    </Title>
+                    <Button
+                      onClick={() =>
+                        navigate(`/rocket/${rocket.id}`, {
+                          state: {
+                            launchId: launch.id,
+                            launchName: launch.name,
+                          },
+                        })
+                      }
+                      radius="md"
+                      size="md"
+                      color="indigo"
+                      aria-label={`View full details for rocket ${rocket.name}`}
+                    >
+                      View Full Rocket Details
+                    </Button>
+                  </Group>
+
+                  <Grid gutter="md" mb="md" columns={12}>
+                    <Grid.Col span={6}>
+                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
+                        Name
+                      </Text>
+                      <Text>{rocket.name}</Text>
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
+                        Type
+                      </Text>
+                      <Text>{rocket.type}</Text>
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
+                        Country
+                      </Text>
+                      <Text>{rocket.country}</Text>
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
+                        Company
+                      </Text>
+                      <Text>{rocket.company}</Text>
+                    </Grid.Col>
+                    <Grid.Col span={12}>
+                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
+                        Description
+                      </Text>
+                      <Text color={theme.colors.gray[7]}>
+                        {rocket.description}
+                      </Text>
+                    </Grid.Col>
+                  </Grid>
+                </motion.div>
+              ) : (
+                <motion.p
+                  key="no-rocket-info"
+                  style={{ fontStyle: "italic", color: theme.colors.gray[6] }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  No rocket information available.
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </section>
+        </Paper>
+      </motion.div>
+    </Container>
   );
 }

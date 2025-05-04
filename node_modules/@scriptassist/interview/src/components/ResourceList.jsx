@@ -2,44 +2,91 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchLaunches } from "../api/spacex";
 import { Link } from "react-router-dom";
+import {
+  Container,
+  TextInput,
+  Button,
+  Title,
+  Group,
+  Text,
+  Loader,
+  Center,
+  Paper,
+  Box,
+  SimpleGrid,
+  useMantineTheme,
+  Stack,
+} from "@mantine/core";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 12;
 
-function getPageNumbers(currentPage, totalPages, maxButtons = 5) {
-  const half = Math.floor(maxButtons / 2);
-  let start = Math.max(1, currentPage - half);
-  let end = Math.min(totalPages, currentPage + half);
-
-  if (currentPage <= half) {
-    end = Math.min(totalPages, maxButtons);
-  } else if (currentPage + half >= totalPages) {
-    start = Math.max(1, totalPages - maxButtons + 1);
-  }
-
-  const pages = [];
-  for (let i = start; i <= end; i++) {
-    pages.push(i);
-  }
-  return pages;
-}
-
-function SkeletonRow() {
+function SkeletonCard() {
+  const theme = useMantineTheme();
   return (
-    <tr className="animate-pulse">
-      <td className="py-4 px-3">
-        <div className="h-5 bg-gray-300 rounded w-28 sm:w-32"></div>
-      </td>
-      <td className="py-4 px-3">
-        <div className="h-5 bg-gray-300 rounded w-20 sm:w-24"></div>
-      </td>
-      <td className="py-4 px-3">
-        <div className="h-5 bg-gray-300 rounded w-16 sm:w-20"></div>
-      </td>
-    </tr>
+    <Paper
+      shadow="sm"
+      radius="md"
+      p="md"
+      withBorder
+      sx={{
+        height: 140,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        backgroundColor:
+          theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.white,
+      }}
+    >
+      <Box
+        sx={{
+          height: 20,
+          width: "60%",
+          borderRadius: theme.radius.sm,
+          backgroundColor:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[5]
+              : theme.colors.gray[3],
+          animation: "pulse 1.5s ease-in-out infinite",
+        }}
+      />
+      <Box
+        sx={{
+          height: 14,
+          width: "80%",
+          borderRadius: theme.radius.sm,
+          backgroundColor:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[5]
+              : theme.colors.gray[3],
+          animation: "pulse 1.5s ease-in-out infinite",
+        }}
+      />
+      <Box
+        sx={{
+          height: 14,
+          width: "40%",
+          borderRadius: theme.radius.sm,
+          backgroundColor:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[5]
+              : theme.colors.gray[3],
+          animation: "pulse 1.5s ease-in-out infinite",
+        }}
+      />
+      <style>
+        {`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+          }
+        `}
+      </style>
+    </Paper>
   );
 }
 
 export default function ResourceList() {
+  const theme = useMantineTheme();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
@@ -65,176 +112,248 @@ export default function ResourceList() {
   } = data || {};
 
   const maxPageButtons = 5;
+
+  function getPageNumbers(currentPage, totalPages, maxButtons = 5) {
+    const half = Math.floor(maxButtons / 2);
+    let start = Math.max(1, currentPage - half);
+    let end = Math.min(totalPages, currentPage + half);
+
+    if (currentPage <= half) {
+      end = Math.min(totalPages, maxButtons);
+    } else if (currentPage + half >= totalPages) {
+      start = Math.max(1, totalPages - maxButtons + 1);
+    }
+
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
   const pageNumbers = getPageNumbers(currentPage, totalPages, maxPageButtons);
 
   return (
-    <div className="max-w-5xl mx-auto p-4 sm:p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4 sm:gap-6">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-          SpaceX Launches
-        </h1>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
-          <input
-            type="text"
-            placeholder="Search launches by name"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.currentTarget.value);
-              setPage(1);
-            }}
-            className="w-full sm:w-auto flex-1 px-4 py-2 sm:py-3 border border-gray-300 rounded-lg shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition duration-300 text-sm sm:text-base"
-            aria-label="Search launches by name"
-          />
-          <button
-            onClick={() => {
-              setPage(1);
-              refetch();
-            }}
-            className="w-full sm:w-auto px-6 py-2 sm:py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-400 transition duration-300 text-sm sm:text-base"
-            aria-label="Search launches"
+    <Container size="lg" my="xl" px={{ base: "sm", md: "lg" }}>
+      <Paper shadow="xl" radius="md" p="xl" withBorder mt={90}>
+        <Group
+          position="apart"
+          mb="md"
+          align="flex-end"
+          spacing="md"
+          noWrap={false}
+          sx={{ flexWrap: "wrap" }}
+        >
+          <Title
+            order={2}
+            weight={900}
+            color={theme.colors.indigo[7]}
+            sx={{ flex: "1 1 100%", marginBottom: 8, minWidth: 0 }}
           >
-            Search
-          </button>
-        </div>
-      </header>
+            SpaceX Launches
+          </Title>
+          <Group
+            spacing="sm"
+            noWrap={false}
+            sx={{ flex: "1 1 auto", minWidth: 280, flexWrap: "wrap" }}
+          >
+            <TextInput
+              placeholder="Search launches by name"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.currentTarget.value);
+                setPage(1);
+              }}
+              size="md"
+              sx={{ flex: "1 1 auto", minWidth: 0, maxWidth: 400 }}
+              aria-label="Search launches by name"
+              radius="md"
+              icon={
+                isLoading ? (
+                  <Loader size="xs" color={theme.colors.indigo[6]} />
+                ) : null
+              }
+            />
+            <Button
+              onClick={() => {
+                setPage(1);
+                refetch();
+              }}
+              size="md"
+              radius="md"
+              aria-label="Search launches"
+              loading={isLoading}
+              sx={{ flex: "0 0 auto", marginTop: 4 }}
+            >
+              Search
+            </Button>
+          </Group>
+        </Group>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-        <table className="min-w-full divide-y divide-gray-200 text-sm sm:text-base">
-          <thead className="bg-indigo-600">
-            <tr>
-              <th className="py-3 px-4 text-left font-semibold text-white uppercase tracking-wide">
-                Name
-              </th>
-              <th className="py-3 px-4 text-left font-semibold text-white uppercase tracking-wide">
-                Date UTC
-              </th>
-              <th className="py-3 px-4 text-left font-semibold text-white uppercase tracking-wide">
-                Details
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
-            {isLoading ? (
-              Array.from({ length: PAGE_SIZE }).map((_, idx) => (
-                <SkeletonRow key={idx} />
-              ))
-            ) : launches.length > 0 ? (
-              launches.map((launch) => (
-                <tr
-                  key={launch.id}
-                  className="hover:bg-indigo-50 transition-colors duration-200 cursor-pointer"
-                >
-                  <td className="py-3 px-4 text-gray-900 font-medium whitespace-nowrap">
+        {isLoading ? (
+          <SimpleGrid
+            cols={3}
+            spacing="lg"
+            breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+          >
+            {Array.from({ length: PAGE_SIZE }).map((_, idx) => (
+              <SkeletonCard key={idx} />
+            ))}
+          </SimpleGrid>
+        ) : launches.length > 0 ? (
+          <SimpleGrid
+            cols={3}
+            spacing="lg"
+            breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+          >
+            {launches.map((launch) => (
+              <Paper
+                key={launch.id}
+                shadow="sm"
+                radius="md"
+                p="md"
+                withBorder
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  height: 180,
+                  transition: "box-shadow 0.3s ease",
+                  "&:hover": {
+                    boxShadow: theme.shadows.md,
+                  },
+                }}
+              >
+                <Stack spacing={6} mb="md" style={{ flexGrow: 1 }}>
+                  <Text
+                    weight={700}
+                    color={theme.colors.indigo[7]}
+                    size="lg"
+                    lineClamp={1}
+                  >
                     {launch.name}
-                  </td>
-                  <td className="py-3 px-4 text-gray-700 whitespace-nowrap">
+                  </Text>
+                  <Text color="dimmed" size="sm">
                     {new Date(launch.date_utc).toLocaleDateString(undefined, {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
                     })}
-                  </td>
-                  <td className="py-3 px-4">
-                    <Link
-                      to={`/launch/${launch.id}`}
-                      className="text-indigo-600 font-semibold hover:text-indigo-800 underline transition text-sm sm:text-base"
-                      aria-label={`View details for ${launch.name}`}
-                    >
-                      View Details
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={3}
-                  className="text-center py-8 text-gray-500 italic select-none"
+                  </Text>
+                  <Text color="gray" size="sm" lineClamp={3}>
+                    {launch.details || "No details available."}
+                  </Text>
+                </Stack>
+                <Button
+                  component={Link}
+                  to={`/launch/${launch.id}`}
+                  variant="light"
+                  color="indigo"
+                  radius="md"
+                  size="sm"
+                  aria-label={`View details for ${launch.name}`}
                 >
-                  No launches found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <nav
-        className="flex flex-wrap justify-center items-center space-x-1 sm:space-x-2 mt-6"
-        aria-label="Pagination"
-      >
-        <button
-          onClick={() => setPage(prevPage)}
-          disabled={!hasPrevPage}
-          className={`px-3 py-1 rounded-md font-semibold text-sm sm:text-base ${
-            !hasPrevPage
-              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-indigo-600 text-white hover:bg-indigo-700"
-          } transition`}
-          aria-label="Previous page"
-        >
-          Previous
-        </button>
-
-        {/*1st page*/}
-        {pageNumbers[0] > 1 && (
-          <>
-            <button
-              onClick={() => setPage(1)}
-              className="px-3 py-1 rounded-md font-semibold text-sm sm:text-base bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition"
-            >
-              1
-            </button>
-            {pageNumbers[0] > 2 && (
-              <span className="px-2 select-none">...</span>
-            )}
-          </>
+                  View Details
+                </Button>
+              </Paper>
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Center py="xl">
+            <Text color="dimmed" italic>
+              No launches found.
+            </Text>
+          </Center>
         )}
 
-        {/* pageButtons */}
-        {pageNumbers.map((pageNum) => (
-          <button
-            key={pageNum}
-            onClick={() => setPage(pageNum)}
-            aria-current={currentPage === pageNum ? "page" : undefined}
-            className={`px-3 py-1 rounded-md font-semibold text-sm sm:text-base transition ${
-              currentPage === pageNum
-                ? "bg-indigo-700 text-white shadow-lg"
-                : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-            }`}
+        {/*pgno*/}
+        <Group
+          position="center"
+          mt="xl"
+          spacing="xs"
+          noWrap={false}
+          sx={{ flexWrap: "wrap", justifyContent: "center" }}
+        >
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!hasPrevPage}
+            onClick={() => setPage(prevPage)}
+            aria-label="Previous page"
+            radius="xl"
+            sx={{ marginBottom: 4 }}
           >
-            {pageNum}
-          </button>
-        ))}
+            Previous
+          </Button>
 
-        {/* endPage*/}
-        {pageNumbers[pageNumbers.length - 1] < totalPages && (
-          <>
-            {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-              <span className="px-2 select-none">...</span>
-            )}
-            <button
-              onClick={() => setPage(totalPages)}
-              className="px-3 py-1 rounded-md font-semibold text-sm sm:text-base bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition"
+          {pageNumbers[0] > 1 && (
+            <>
+              <Button
+                variant="subtle"
+                size="sm"
+                onClick={() => setPage(1)}
+                aria-label="Page 1"
+                radius="xl"
+                sx={{ marginBottom: 4 }}
+              >
+                1
+              </Button>
+              {pageNumbers[0] > 2 && (
+                <Text size="sm" sx={{ marginBottom: 4 }}>
+                  ...
+                </Text>
+              )}
+            </>
+          )}
+
+          {pageNumbers.map((pageNum) => (
+            <Button
+              key={pageNum}
+              variant={currentPage === pageNum ? "filled" : "subtle"}
+              size="sm"
+              onClick={() => setPage(pageNum)}
+              aria-current={currentPage === pageNum ? "page" : undefined}
+              aria-label={`Page ${pageNum}`}
+              radius="xl"
+              sx={{ marginBottom: 4 }}
             >
-              {totalPages}
-            </button>
-          </>
-        )}
+              {pageNum}
+            </Button>
+          ))}
 
-        <button
-          onClick={() => setPage(nextPage)}
-          disabled={!hasNextPage}
-          className={`px-3 py-1 rounded-md font-semibold text-sm sm:text-base ${
-            !hasNextPage
-              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-indigo-600 text-white hover:bg-indigo-700"
-          } transition`}
-          aria-label="Next page"
-        >
-          Next
-        </button>
-      </nav>
-    </div>
+          {pageNumbers[pageNumbers.length - 1] < totalPages && (
+            <>
+              {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
+                <Text size="sm" sx={{ marginBottom: 4 }}>
+                  ...
+                </Text>
+              )}
+              <Button
+                variant="subtle"
+                size="sm"
+                onClick={() => setPage(totalPages)}
+                aria-label={`Page ${totalPages}`}
+                radius="xl"
+                sx={{ marginBottom: 4 }}
+              >
+                {totalPages}
+              </Button>
+            </>
+          )}
+
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!hasNextPage}
+            onClick={() => setPage(nextPage)}
+            aria-label="Next page"
+            radius="xl"
+            sx={{ marginBottom: 4 }}
+          >
+            Next
+          </Button>
+        </Group>
+      </Paper>
+    </Container>
   );
 }

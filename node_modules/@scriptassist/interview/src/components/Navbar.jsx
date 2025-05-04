@@ -2,8 +2,81 @@ import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore.js";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Header,
+  Container,
+  Group,
+  Burger,
+  Button,
+  UnstyledButton,
+  Text,
+  Box,
+  Divider,
+  Collapse,
+  createStyles,
+} from "@mantine/core";
+
+const useStyles = createStyles((theme) => ({
+  link: {
+    display: "inline-block",
+    padding: `${theme.spacing.sm}px ${theme.spacing.md}px`,
+    fontWeight: 600,
+    color: theme.colors.gray[7],
+    textDecoration: "none",
+    borderBottom: "2px solid transparent",
+    transition: "color 0.3s ease, border-color 0.3s ease",
+
+    "&:hover": {
+      color: theme.colors.indigo[6],
+      borderBottomColor: theme.colors.indigo[6],
+    },
+  },
+
+  activeLink: {
+    color: theme.colors.indigo[6],
+    borderBottomColor: theme.colors.indigo[6],
+  },
+
+  logo: {
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing.xs,
+    fontWeight: 800,
+    fontSize: 24,
+    color: theme.colors.indigo[7],
+    textDecoration: "none",
+  },
+
+  mobileMenu: {
+    backgroundColor: theme.white,
+    borderTop: `1px solid ${theme.colors.gray[3]}`,
+    boxShadow: theme.shadows.md,
+    padding: theme.spacing.md,
+  },
+
+  mobileLink: {
+    display: "block",
+    padding: `${theme.spacing.sm}px ${theme.spacing.md}px`,
+    fontWeight: 600,
+    color: theme.colors.gray[7],
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    transition: "background-color 0.3s ease, color 0.3s ease",
+
+    "&:hover": {
+      backgroundColor: theme.colors.indigo[0],
+      color: theme.colors.indigo[6],
+    },
+  },
+
+  mobileActiveLink: {
+    backgroundColor: theme.colors.indigo[1],
+    color: theme.colors.indigo[7],
+  },
+}));
 
 export default function Navbar() {
+  const { classes, cx } = useStyles();
   const [menuOpen, setMenuOpen] = useState(false);
   const token = useAuthStore((state) => state.token);
   const logout = useAuthStore((state) => state.logout);
@@ -38,152 +111,136 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
+    <Header height={60} fixed withBorder>
+      <Container size="xl" style={{ height: "100%" }}>
+        <Group position="apart" align="center" style={{ height: "100%" }}>
           {/*logo*/}
-          <Link to="/resources" className="flex items-center space-x-2">
+          <UnstyledButton
+            component={Link}
+            to="/resources"
+            className={classes.logo}
+            aria-label="SpaceXplorer Home"
+          >
             <svg
-              className="h-10 w-10 text-indigo-600"
+              className="icon"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              width={32}
+              height={32}
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ color: "#4c6ef5" }}
               aria-hidden="true"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 2l9 21H3L12 2z"
-              />
+              <path d="M12 2l9 21H3L12 2z" />
             </svg>
-            <span className="text-2xl font-extrabold text-gray-900 tracking-tight">
+            <Text size="xl" weight={700} color="indigo.7" ml="xs">
               SpaceXplorer
-            </span>
-          </Link>
+            </Text>
+          </UnstyledButton>
 
-          {/*menu*/}
           {token && (
-            <>
-              <div className="hidden md:flex space-x-10">
-                {navLinks.map(({ name, to }) => (
-                  <NavLink
-                    key={name}
-                    to={to}
-                    className={({ isActive }) =>
-                      `relative inline-block px-3 py-2 font-semibold text-gray-700 hover:text-indigo-600 transition ${
-                        isActive
-                          ? "text-indigo-600 after:absolute after:-bottom-1 after:left-0 after:w-full after:h-0.5 after:bg-indigo-600"
-                          : ""
-                      }`
-                    }
-                  >
-                    {name}
-                  </NavLink>
-                ))}
-              </div>
-
-              <div className="hidden md:flex items-center space-x-4">
-                <button
-                  onClick={handleLogout}
-                  className="px-5 py-2 rounded-md text-indigo-600 font-semibold border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white transition"
-                >
-                  Logout
-                </button>
-              </div>
-            </>
-          )}
-
-          {/* sm screen button */}
-          {token && (
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              aria-expanded={menuOpen}
-              aria-label="Toggle menu"
+            <Group
+              spacing="xl"
+              className="desktop-nav"
+              sx={{
+                display: "none",
+                "@media (min-width: 768px)": { display: "flex" },
+              }}
             >
-              <motion.div
-                variants={iconVariants}
-                animate={menuOpen ? "open" : "closed"}
-                style={{ originX: 0.5, originY: 0.5 }}
-              >
-                {menuOpen ? (
-                  <svg
-                    className="h-6 w-6"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="h-6 w-6"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 8h16M4 16h16"
-                    />
-                  </svg>
-                )}
-              </motion.div>
-            </button>
+              {navLinks.map(({ name, to }) => (
+                <NavLink
+                  key={name}
+                  to={to}
+                  className={({ isActive }) =>
+                    cx(classes.link, { [classes.activeLink]: isActive })
+                  }
+                >
+                  {name}
+                </NavLink>
+              ))}
+            </Group>
           )}
-        </div>
-      </div>
 
-      {/* sm screen*/}
-      <AnimatePresence>
-        {token && menuOpen && (
-          <motion.div
-            className="md:hidden bg-white border-t border-gray-200 shadow-lg overflow-hidden"
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={menuVariants}
-          >
-            <div className="px-6 pt-4 pb-6 space-y-4">
+          {token && (
+            <Group
+              sx={{
+                display: "none",
+                "@media (min-width: 768px)": { display: "flex" },
+              }}
+            >
+              <Button
+                variant="outline"
+                color="indigo"
+                onClick={handleLogout}
+                radius="md"
+                size="md"
+              >
+                Logout
+              </Button>
+            </Group>
+          )}
+          
+          {/* //burger */}
+          {token && (
+            <Burger
+              opened={menuOpen}
+              onClick={() => setMenuOpen((o) => !o)}
+              size="sm"
+              color="#4c6ef5"
+              className="mobile-burger"
+              sx={{ "@media (min-width: 768px)": { display: "none" } }}
+              aria-label="Toggle menu"
+            />
+          )}
+        </Group>
+
+        <AnimatePresence>
+          {token && menuOpen && (
+            <motion.div
+              className={classes.mobileMenu}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={menuVariants}
+            >
               {navLinks.map(({ name, to }) => (
                 <NavLink
                   key={name}
                   to={to}
                   onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
-                    `block px-3 py-2 rounded-md font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 transition ${
-                      isActive ? "bg-indigo-100 text-indigo-600" : ""
-                    }`
+                    cx(classes.mobileLink, {
+                      [classes.mobileActiveLink]: isActive,
+                    })
                   }
                 >
                   {name}
                 </NavLink>
               ))}
-              <div className="pt-4 border-t border-gray-200 flex flex-col space-y-3">
-                <button
-                  onClick={handleLogout}
-                  className="block px-5 py-2 rounded-md text-indigo-600 font-semibold border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white transition text-center"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+
+              <Divider my="sm" />
+
+              <Button
+                variant="outline"
+                color="indigo"
+                fullWidth
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+                radius="md"
+                size="md"
+              >
+                Logout
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Container>
+    </Header>
   );
 }

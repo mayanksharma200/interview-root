@@ -1,7 +1,24 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
+import {
+  Container,
+  Paper,
+  TextInput,
+  PasswordInput,
+  Button,
+  Title,
+  Text,
+  Center,
+  LoadingOverlay,
+  Stack,
+  Anchor,
+  Box,
+} from "@mantine/core";
 import { motion } from "framer-motion";
+
+const MotionPaper = motion(Paper);
+const MotionButton = motion(Button);
 
 export default function LoginForm() {
   const login = useAuthStore((state) => state.login);
@@ -32,126 +49,234 @@ export default function LoginForm() {
     }
   };
 
-  // Loader animation variants
-  const loaderVariants = {
-    animate: {
-      rotate: 360,
-      transition: {
-        repeat: Infinity,
-        duration: 1,
-        ease: "linear",
-      },
-    },
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-purple-900 via-indigo-900 to-blue-900 flex items-center justify-center px-6">
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="bg-black bg-opacity-70 backdrop-blur-3xl rounded-3xl shadow-2xl max-w-xl w-full p-12"
+    <Box
+      sx={{
+        minHeight: "100vh",
+        width: "100%",
+        backgroundImage:
+          'url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
+          zIndex: 0,
+        },
+      }}
+    >
+      <Container
+        size={580}
+        mt={110}
+        px={40}
+        sx={(theme) => ({
+          maxWidth: 580,
+          width: "100%",
+          position: "relative",
+          zIndex: 1,
+          [theme.fn.smallerThan("sm")]: {
+            maxWidth: "100%",
+            paddingLeft: theme.spacing.md,
+            paddingRight: theme.spacing.md,
+            marginTop: theme.spacing.xl,
+            marginBottom: theme.spacing.xl,
+          },
+        })}
       >
-        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-12 text-center drop-shadow-lg select-none">
-          SpaceX Explorer
-        </h1>
-        <form onSubmit={handleSubmit} noValidate className="space-y-8">
-          <div>
-            <label
-              htmlFor="username"
-              className="block mb-2 text-gray-300 font-semibold select-none"
-            >
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              placeholder="admin@spacex.com"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              disabled={loading}
-              className="w-full rounded-xl bg-gray-800 bg-opacity-60 px-5 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-shadow shadow-md"
-            />
-          </div>
+        <MotionPaper
+          padding="xl"
+          radius="lg"
+          shadow="xl"
+          withBorder
+          initial={{ opacity: 0, y: 40, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          sx={(theme) => ({
+            paddingTop: 40,
+            paddingBottom: 40,
+            paddingLeft: 60,
+            paddingRight: 60,
+            background: "rgba(255, 255, 255, 0.9)", 
+            backdropFilter: "blur(20px)",
+            borderColor: "rgba(0, 0, 255, 0.7)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
+            width: "100%",
+            boxSizing: "border-box",
+            [theme.fn.smallerThan("sm")]: {
+              paddingLeft: theme.spacing.md,
+              paddingRight: theme.spacing.md,
+              borderRadius: theme.radius.md,
+            },
+          })}
+          role="form"
+          aria-labelledby="login-form-title"
+        >
+          <LoadingOverlay visible={loading} overlayBlur={3} />
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 text-gray-300 font-semibold select-none"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="spacex123"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={loading}
-              className="w-full rounded-xl bg-gray-800 bg-opacity-60 px-5 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-shadow shadow-md"
-            />
-          </div>
-
-          {error && (
-            <p className="text-red-500 text-center font-semibold select-none">
-              {error}
-            </p>
-          )}
-
-          <motion.button
-            type="submit"
-            disabled={loading}
-            whileHover={{ scale: loading ? 1 : 1.05 }}
-            whileTap={{ scale: loading ? 1 : 0.95 }}
-            className={`w-full py-4 rounded-xl text-white font-extrabold shadow-lg transition-shadow ${
-              loading
-                ? "bg-cyan-600 cursor-not-allowed"
-                : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-xl"
-            }`}
+          <Title
+            id="login-form-title"
+            align="center"
+            sx={(theme) => ({
+              fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+              fontWeight: 900,
+              fontSize: 38,
+              background: "linear-gradient(90deg, #22c55e, #3b82f6)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              marginBottom: theme.spacing.xl,
+              textShadow: "0 2px 6px rgba(0,0,0,0.15)",
+              userSelect: "none",
+            })}
           >
-            {loading ? (
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="mx-auto h-6 w-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                variants={loaderVariants}
-                animate="animate"
+            SpaceX Explorer
+          </Title>
+
+          <form onSubmit={handleSubmit} noValidate>
+            <Stack spacing="xl">
+              <TextInput
+                label="Username"
+                placeholder="admin@spacex.com"
+                value={username}
+                onChange={(event) => setUsername(event.currentTarget.value)}
+                required
+                disabled={loading}
+                autoComplete="username"
+                radius="md"
+                size="md"
+                styles={{
+                  input: {
+                    backgroundColor: "#fff",
+                    color: "#000",
+                    borderColor: "#1e40af",
+                    transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+                    "&::placeholder": {
+                      color: "#3b82f6",
+                    },
+                    "&:focus-visible": {
+                      outline: "3px solid #2563eb",
+                      outlineOffset: 2,
+                    },
+                    "&:focus": {
+                      borderColor: "#2563eb",
+                      boxShadow: "0 0 8px #2563eb",
+                      backgroundColor: "#f0f9ff",
+                    },
+                    "&:hover": {
+                      borderColor: "#3b82f6",
+                      boxShadow: "0 0 6px #3b82f6",
+                    },
+                  },
+                  label: {
+                    color: "#1e40af",
+                    fontWeight: 700,
+                  },
+                }}
+                aria-required="true"
+              />
+
+              <PasswordInput
+                label="Password"
+                placeholder="spacex123"
+                value={password}
+                onChange={(event) => setPassword(event.currentTarget.value)}
+                required
+                disabled={loading}
+                autoComplete="current-password"
+                radius="md"
+                size="md"
+                styles={{
+                  input: {
+                    backgroundColor: "#fff",
+                    color: "#000",
+                    borderColor: "#1e40af",
+                    transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+                    "&::placeholder": {
+                      color: "#3b82f6",
+                    },
+                    "&:focus-visible": {
+                      outline: "3px solid #2563eb",
+                      outlineOffset: 2,
+                    },
+                    "&:focus": {
+                      borderColor: "#2563eb",
+                      boxShadow: "0 0 8px #2563eb",
+                      backgroundColor: "#f0f9ff",
+                    },
+                    "&:hover": {
+                      borderColor: "#3b82f6",
+                      boxShadow: "0 0 6px #3b82f6",
+                    },
+                  },
+                  label: {
+                    color: "#1e40af",
+                    fontWeight: 700,
+                  },
+                }}
+                aria-required="true"
+              />
+
+              {error && (
+                <Text
+                  color="red"
+                  size="sm"
+                  align="center"
+                  weight={700}
+                  sx={{ userSelect: "none" }}
+                  role="alert"
+                  aria-live="assertive"
+                >
+                  {error}
+                </Text>
+              )}
+
+              <MotionButton
+                type="submit"
+                fullWidth
+                size="lg"
+                radius="md"
+                loading={loading}
+                whileHover={{ scale: loading ? 1 : 1.05 }}
+                whileTap={{ scale: loading ? 1 : 0.95 }}
+                sx={{
+                  background: "linear-gradient(90deg, #22c55e, #3b82f6)",
+                  boxShadow:
+                    "0 4px 15px rgba(34, 197, 94, 0.5), 0 4px 15px rgba(59, 130, 246, 0.5)",
+                  fontWeight: 700,
+                  userSelect: "none",
+                }}
+                aria-label="Log in"
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                />
-              </motion.svg>
-            ) : (
-              "Log In"
-            )}
-          </motion.button>
-        </form>
+                Log In
+              </MotionButton>
+            </Stack>
+          </form>
 
-        <p className="mt-10 text-center text-gray-400 text-sm select-none">
-          Don't have an account?{" "}
-          <a
-            href="#"
-            onClick={(e) => e.preventDefault()}
-            className="text-cyan-400 font-semibold hover:underline cursor-pointer"
-          >
-            Contact Admin
-          </a>
-        </p>
-      </motion.div>
-    </div>
+          <Center mt="lg">
+            <Text size="sm" color="#1e40af">
+              Don't have an account?{" "}
+              <Anchor
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                weight={600}
+                sx={{
+                  color: "#2563eb",
+                  cursor: "pointer",
+                  "&:hover": { textDecoration: "underline" },
+                  userSelect: "none",
+                }}
+              >
+                Contact Admin
+              </Anchor>
+            </Text>
+          </Center>
+        </MotionPaper>
+      </Container>
+    </Box>
   );
 }

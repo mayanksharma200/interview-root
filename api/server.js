@@ -4,12 +4,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
-// Load env variables
 dotenv.config();
 
 const app = express();
 const SECRET_KEY = process.env.JWT_SECRET;
-// console.log("JWT_SECRET:", SECRET_KEY);
 
 if (!SECRET_KEY) {
   console.error(
@@ -39,7 +37,7 @@ app.post("/api/login", (req, res) => {
   if (username && password) {
     const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: "1h" });
 
-    // Set token as httpOnly cookie
+    // set token
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -53,7 +51,7 @@ app.post("/api/login", (req, res) => {
   res.status(401).json({ message: "Invalid credentials" });
 });
 
-// Protected route
+// protected route
 app.get("/api/profile", (req, res) => {
   const authHeader = req.headers.authorization;
 
