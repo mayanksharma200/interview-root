@@ -9,8 +9,8 @@
     "scripts": {
       "dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace interview\"",
       "start": "concurrently \"npm start --workspace backend\" \"npm run preview --workspace interview\"",
-"build": "npm run build --workspace interview && npm run build --workspace api || echo 'No build for api'"
-},
+      "postinstall": "chmod +x ./node_modules/.bin/concurrently",
+  "build": "concurrently \"npm run build --workspace interview\" \"npm run build --workspace api || echo 'No build for api'\""},
     "devDependencies": {
       "concurrently": "^7.6.0",
       "shx": "^0.4.0"
