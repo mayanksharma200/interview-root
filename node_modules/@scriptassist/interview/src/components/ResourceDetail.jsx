@@ -126,7 +126,7 @@ export default function ResourceDetail() {
         <h3 className="text-xl font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2">
           Launch Details
         </h3>
-        <p className="text-gray-700 leading-relaxed min-h-[80px]">
+        <p className="text-gray-700 leading-relaxed min-h-[50px]">
           {launch.details || (
             <span className="italic text-gray-400">No details available.</span>
           )}

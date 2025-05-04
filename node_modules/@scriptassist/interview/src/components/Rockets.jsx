@@ -42,7 +42,7 @@ export default function Rockets() {
   } = data || {};
 
   return (
-    <div className="max-w-6xl mx-auto p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+    <div className="max-w-5xl mx-auto p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
       <h1 className="text-3xl font-extrabold text-gray-900 mb-6">Rockets</h1>
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-6">
