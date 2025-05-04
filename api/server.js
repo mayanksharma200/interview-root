@@ -34,7 +34,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Login
-app.post("/login", (req, res) => {
+app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
   if (username && password) {
     const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: "1h" });
@@ -54,7 +54,7 @@ app.post("/login", (req, res) => {
 });
 
 // Protected route
-app.get("/profile", (req, res) => {
+app.get("/api/profile", (req, res) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
