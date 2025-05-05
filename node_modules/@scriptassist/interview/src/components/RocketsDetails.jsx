@@ -9,11 +9,8 @@ import {
   Title,
   Text,
   Grid,
-  Image,
   Anchor,
   Breadcrumbs,
-  Group,
-  Loader,
   Stack,
   useMantineTheme,
   Box,
@@ -187,12 +184,13 @@ export default function RocketDetail() {
           fontWeight: 600,
           color: theme.colors.indigo[7],
           "&:hover": { color: theme.colors.indigo[9] },
+          whiteSpace: "nowrap",
         })}
       >
         {item.title}
       </Anchor>
     ) : (
-      <Text key={index} weight={700} color="dark">
+      <Text key={index} weight={700} color="dark" sx={{ whiteSpace: "nowrap" }}>
         {item.title}
       </Text>
     )
@@ -207,9 +205,26 @@ export default function RocketDetail() {
         exit="exit"
       >
         <Paper shadow="xl" radius="md" p="xl" withBorder mt={90}>
-          <Breadcrumbs separator="/" mb="md" aria-label="Breadcrumb">
-            {breadcrumbs}
-          </Breadcrumbs>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: theme.spacing.xs,
+              marginBottom: theme.spacing.md,
+            }}
+            aria-label="Breadcrumb navigation"
+          >
+            <Breadcrumbs
+              separator="/"
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: theme.spacing.xs,
+              }}
+            >
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Box>
 
           <Title order={1} mb="lg" weight={900} color={theme.colors.dark[7]}>
             {rocket.name}
