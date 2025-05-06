@@ -15,14 +15,111 @@ import {
   Grid,
   Stack,
   Anchor,
-  Box,
   useMantineTheme,
+  Divider,
 } from "@mantine/core";
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+const fadeInScale = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
 };
+
+const glassCardStyle = (theme) => ({
+  background:
+    theme.colorScheme === "dark"
+      ? "rgba(20, 20, 30, 0.75)" // original dark bg
+      : "rgba(255, 255, 255, 0.85)", // original light bg
+  backdropFilter: "blur(16px)",
+  WebkitBackdropFilter: "blur(16px)",
+  borderRadius: 24,
+  border: `1.5px solid ${theme.colors.indigo[5]}`,
+  boxShadow:
+    theme.colorScheme === "dark"
+      ? "0 8px 32px rgba(31, 38, 135, 0.37)"
+      : "0 8px 32px rgba(0, 0, 0, 0.1)",
+  color: theme.colorScheme === "dark" ? theme.white : theme.black,
+  padding: theme.spacing.xl,
+  marginTop: theme.spacing.xl,
+  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+});
+
+const badgeColors = {
+  upcoming: "cyan",
+  success: "teal",
+  failed: "red",
+};
+
+function LaunchStatusBadge({ launch }) {
+  if (launch.upcoming) {
+    return (
+      <Badge
+        color={badgeColors.upcoming}
+        variant="filled"
+        leftSection={<i className="fas fa-clock" style={{ marginRight: 6 }} />}
+        sx={(theme) => ({
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: 1.5,
+          fontSize: 14,
+          padding: "8px 16px",
+          borderRadius: 30,
+          boxShadow: `0 0 8px ${theme.colors.cyan[5]}`,
+          backgroundColor: theme.colors.cyan[7],
+        })}
+      >
+        Upcoming
+      </Badge>
+    );
+  }
+  if (launch.success === true) {
+    return (
+      <Badge
+        color={badgeColors.success}
+        variant="filled"
+        leftSection={<i className="fas fa-check" style={{ marginRight: 6 }} />}
+        sx={(theme) => ({
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: 1.5,
+          fontSize: 14,
+          padding: "8px 16px",
+          borderRadius: 30,
+          boxShadow: `0 0 8px ${theme.colors.teal[5]}`,
+          backgroundColor: theme.colors.teal[7],
+        })}
+      >
+        Success
+      </Badge>
+    );
+  }
+  if (launch.success === false) {
+    return (
+      <Badge
+        color={badgeColors.failed}
+        variant="filled"
+        leftSection={<i className="fas fa-times" style={{ marginRight: 6 }} />}
+        sx={(theme) => ({
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: 1.5,
+          fontSize: 14,
+          padding: "8px 16px",
+          borderRadius: 30,
+          boxShadow: `0 0 8px ${theme.colors.red[5]}`,
+          backgroundColor: theme.colors.red[7],
+        })}
+      >
+        Failed
+      </Badge>
+    );
+  }
+  return null;
+}
 
 export default function ResourceDetail() {
   const theme = useMantineTheme();
@@ -54,11 +151,15 @@ export default function ResourceDetail() {
     return (
       <Container size="sm" my="xl">
         <Paper
-          shadow="md"
+          shadow="xl"
           radius="md"
           p="xl"
           withBorder
-          style={{ textAlign: "center", backgroundColor: theme.colors.red[0] }}
+          style={{
+            textAlign: "center",
+            backgroundColor: theme.colors.red[0],
+            boxShadow: `0 0 20px ${theme.colors.red[5]}`,
+          }}
         >
           <Text color={theme.colors.red[7]} weight={700} size="lg">
             Launch not found
@@ -68,173 +169,326 @@ export default function ResourceDetail() {
     );
 
   return (
-    <Container size="md" my="xl">
-      <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
-        <Paper shadow="xl" radius="md" p="xl" withBorder mt={90}>
-          <Group spacing={4} mb="md" aria-label="Breadcrumb" role="navigation">
+    <Container size="md" my="xl" px="md" style={{ marginTop: 100, paddingBottom:80 }}>
+      <motion.div initial="hidden" animate="visible" variants={fadeInScale}>
+        <Paper sx={glassCardStyle(theme)} withBorder>
+          {/* Breadcrumb */}
+          <Group
+            spacing={6}
+            mb="md"
+            aria-label="Breadcrumb"
+            role="navigation"
+            sx={{ userSelect: "none" }}
+          >
             <Anchor
               component={Link}
               to="/resources"
               weight={600}
               color={theme.colors.indigo[7]}
               underline
-              sx={{ "&:hover": { color: theme.colors.indigo[9] } }}
+              sx={{
+                "&:hover": { color: theme.colors.indigo[9] },
+                fontSize: 14,
+                letterSpacing: 2,
+                textTransform: "uppercase",
+                fontWeight: 700,
+                textShadow:
+                  theme.colorScheme === "dark"
+                    ? "0 0 6px rgba(99, 102, 241, 0.8)"
+                    : "none",
+              }}
             >
               Launches
             </Anchor>
-            <Text>/</Text>
-            <Text weight={700} color={theme.colors.dark[7]}>
+            <Text
+              color={theme.colors.indigo[4]}
+              sx={{ fontWeight: 700, letterSpacing: 2 }}
+            >
+              /
+            </Text>
+            <Text
+              weight={700}
+              color={theme.colorScheme === "dark" ? theme.white : theme.black}
+              sx={{
+                fontSize: 14,
+                letterSpacing: 2,
+                textTransform: "uppercase",
+                fontWeight: 800,
+                textShadow:
+                  theme.colorScheme === "dark"
+                    ? "0 0 8px rgba(99, 102, 241, 0.9)"
+                    : "none",
+              }}
+            >
               {launch.name}
             </Text>
           </Group>
 
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-          >
-            <Title order={2} mb="sm" weight={900} color={theme.colors.dark[7]}>
+          {/* Title and Status */}
+          <Group position="apart" align="center" mb="md" noWrap>
+            <Title
+              order={2}
+              weight={900}
+              color={theme.colorScheme === "dark" ? theme.white : theme.black}
+              sx={{
+                letterSpacing: 3,
+                fontFamily: "'Poppins', sans-serif",
+                textShadow:
+                  theme.colorScheme === "dark"
+                    ? "0 0 12px rgba(99, 102, 241, 0.9)"
+                    : "none",
+              }}
+            >
               {launch.name}
             </Title>
-          </motion.div>
+            <LaunchStatusBadge launch={launch} />
+          </Group>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          {/* Date */}
+          <Text
+            color={theme.colors.indigo[4]}
+            size="sm"
+            weight={600}
+            mb="lg"
+            sx={{
+              letterSpacing: 1.5,
+              fontStyle: "italic",
+              fontWeight: 700,
+              textShadow:
+                theme.colorScheme === "dark"
+                  ? "0 0 6px rgba(99, 102, 241, 0.7)"
+                  : "none",
+            }}
           >
-            <Text color="dimmed" size="sm" mb="lg">
-              Date:{" "}
-              <time
-                dateTime={launch.date_utc}
-                style={{ fontWeight: 600, color: theme.colors.dark[7] }}
-              >
-                {new Date(launch.date_utc).toLocaleString(undefined, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </time>
-            </Text>
-          </motion.div>
-          <motion.section
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            style={{ marginBottom: theme.spacing.xl }}
-          >
-            <Title order={4} mb="sm" weight={700} color={theme.colors.dark[7]}>
+            Date:{" "}
+            <time dateTime={launch.date_utc}>
+              {new Date(launch.date_utc).toLocaleString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </time>
+          </Text>
+
+          {/* Launch Details */}
+          <Stack spacing="xs" mb="xl">
+            <Title
+              order={4}
+              weight={700}
+              color={theme.colorScheme === "dark" ? theme.white : theme.black}
+              sx={{ letterSpacing: 2 }}
+            >
               Launch Details
             </Title>
             <Text
               color={
-                launch.details ? theme.colors.dark[7] : theme.colors.gray[5]
+                launch.details
+                  ? theme.colorScheme === "dark"
+                    ? theme.white
+                    : theme.black
+                  : theme.colors.gray[5]
               }
               size="md"
-              style={{ minHeight: 50 }}
+              sx={{
+                minHeight: 60,
+                fontStyle: launch.details ? "normal" : "italic",
+                fontWeight: 600,
+                lineHeight: 1.5,
+                textShadow:
+                  theme.colorScheme === "dark"
+                    ? "0 0 4px rgba(255, 255, 255, 0.15)"
+                    : "none",
+              }}
             >
-              {launch.details || <em>No details available.</em>}
+              {launch.details || "No details available."}
             </Text>
-          </motion.section>
+          </Stack>
 
-          <section>
-            <AnimatePresence>
-              {loadingRocket ? (
-                <motion.div
-                  key="loading-rocket"
-                  style={{ height: 80 }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+          <Divider my="xl" variant="dashed" />
+
+          {/* Rocket Details Section */}
+          <AnimatePresence>
+            {loadingRocket ? (
+              <motion.div
+                key="loading-rocket"
+                style={{ height: 100 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <Group
+                  position="center"
+                  align="center"
+                  style={{ height: "100%" }}
                 >
-                  <Group
-                    position="center"
-                    align="center"
-                    style={{ height: "100%" }}
+                  <Loader size="lg" color={theme.colors.indigo[6]} />
+                </Group>
+              </motion.div>
+            ) : rocket ? (
+              <motion.div
+                key="rocket-details"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Group position="apart" mb="md" align="center" noWrap>
+                  <Title
+                    order={4}
+                    weight={700}
+                    color={
+                      theme.colorScheme === "dark" ? theme.white : theme.black
+                    }
+                    sx={{ letterSpacing: 2 }}
                   >
-                    <Loader size="lg" color={theme.colors.indigo[6]} />
-                  </Group>
-                </motion.div>
-              ) : rocket ? (
-                <motion.div
-                  key="rocket-details"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <Group position="apart" mb="md" align="center">
-                    <Title order={4} weight={700} color={theme.colors.dark[7]}>
-                      Rocket Details
-                    </Title>
-                    <Button
-                      onClick={() =>
-                        navigate(`/rocket/${rocket.id}`, {
-                          state: {
-                            launchId: launch.id,
-                            launchName: launch.name,
-                          },
-                        })
-                      }
-                      radius="md"
-                      size="md"
-                      color="indigo"
-                      aria-label={`View full details for rocket ${rocket.name}`}
-                    >
-                      View Full Rocket Details
-                    </Button>
-                  </Group>
+                    Rocket Details
+                  </Title>
+                  <Button
+                    onClick={() =>
+                      navigate(`/rocket/${rocket.id}`, {
+                        state: {
+                          launchId: launch.id,
+                          launchName: launch.name,
+                        },
+                      })
+                    }
+                    radius="xl"
+                    size="md"
+                    color="indigo"
+                    variant="gradient"
+                    gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+                    aria-label={`View full details for rocket ${rocket.name}`}
+                    sx={(theme) => ({
+                      fontWeight: 800,
+                      letterSpacing: 2,
+                      textTransform: "uppercase",
+                      color: theme.white,
+                      boxShadow: "0 6px 20px rgba(0, 123, 255, 0.6)",
+                      transition: "box-shadow 0.3s ease",
+                      padding: "14px 32px",
+                      minWidth: 200,
+                      fontSize: 16,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      [theme.fn.smallerThan("sm")]: {
+                        width: "100%",
+                        fontSize: 14,
+                        padding: "12px 16px",
+                        minWidth: "auto",
+                        whiteSpace: "normal",
+                        textAlign: "center",
+                        wordBreak: "break-word",
+                      },
+                      "&:hover": {
+                        boxShadow: "0 8px 30px rgba(0, 123, 255, 0.9)",
+                      },
+                    })}
+                  >
+                    View Full Details
+                  </Button>
+                </Group>
 
-                  <Grid gutter="md" mb="md" columns={12}>
-                    <Grid.Col span={6}>
-                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
-                        Name
+                <Grid gutter="md" mb="md" columns={12}>
+                  {[
+                    { label: "Name", value: rocket.name },
+                    { label: "Type", value: rocket.type },
+                    { label: "Country", value: rocket.country },
+                    { label: "Company", value: rocket.company },
+                  ].map(({ label, value }) => (
+                    <Grid.Col key={label} span={6}>
+                      <Text
+                        weight={700}
+                        color={
+                          theme.colorScheme === "dark"
+                            ? theme.white
+                            : theme.black
+                        }
+                        mb={6}
+                        sx={{
+                          letterSpacing: 1,
+                          textTransform: "uppercase",
+                          textShadow:
+                            theme.colorScheme === "dark"
+                              ? "0 0 6px rgba(99, 102, 241, 0.7)"
+                              : "none",
+                        }}
+                      >
+                        {label}
                       </Text>
-                      <Text>{rocket.name}</Text>
+                      <Text
+                        size="md"
+                        color={theme.colors.indigo[4]}
+                        sx={{
+                          fontWeight: 600,
+                          textShadow:
+                            theme.colorScheme === "dark"
+                              ? "0 0 4px rgba(255, 255, 255, 0.15)"
+                              : "none",
+                        }}
+                      >
+                        {value}
+                      </Text>
                     </Grid.Col>
-                    <Grid.Col span={6}>
-                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
-                        Type
-                      </Text>
-                      <Text>{rocket.type}</Text>
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
-                        Country
-                      </Text>
-                      <Text>{rocket.country}</Text>
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
-                        Company
-                      </Text>
-                      <Text>{rocket.company}</Text>
-                    </Grid.Col>
-                    <Grid.Col span={12}>
-                      <Text weight={600} color={theme.colors.dark[7]} mb={4}>
-                        Description
-                      </Text>
-                      <Text color={theme.colors.gray[7]}>
-                        {rocket.description}
-                      </Text>
-                    </Grid.Col>
-                  </Grid>
-                </motion.div>
-              ) : (
-                <motion.p
-                  key="no-rocket-info"
-                  style={{ fontStyle: "italic", color: theme.colors.gray[6] }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  No rocket information available.
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </section>
+                  ))}
+                  <Grid.Col span={12}>
+                    <Text
+                      weight={700}
+                      color={
+                        theme.colorScheme === "dark" ? theme.white : theme.black
+                      }
+                      mb={6}
+                      sx={{
+                        letterSpacing: 1,
+                        textTransform: "uppercase",
+                        textShadow:
+                          theme.colorScheme === "dark"
+                            ? "0 0 6px rgba(99, 102, 241, 0.7)"
+                            : "none",
+                      }}
+                    >
+                      Description
+                    </Text>
+                    <Text
+                      color={
+                        theme.colorScheme === "dark"
+                          ? theme.colors.gray[3]
+                          : theme.colors.dark[3]
+                      }
+                      size="md"
+                      sx={{
+                        lineHeight: 1.7,
+                        fontWeight: 600,
+                        textShadow:
+                          theme.colorScheme === "dark"
+                            ? "0 0 4px rgba(255, 255, 255, 0.15)"
+                            : "none",
+                      }}
+                    >
+                      {rocket.description}
+                    </Text>
+                  </Grid.Col>
+                </Grid>
+              </motion.div>
+            ) : (
+              <motion.p
+                key="no-rocket-info"
+                style={{
+                  fontStyle: "italic",
+                  color: theme.colors.gray[6],
+                  textAlign: "center",
+                  marginTop: theme.spacing.md,
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                No rocket information available.
+              </motion.p>
+            )}
+          </AnimatePresence>
         </Paper>
       </motion.div>
     </Container>

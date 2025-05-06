@@ -16,61 +16,91 @@ import {
   SimpleGrid,
   useMantineTheme,
   Stack,
+  ActionIcon,
+  Tooltip,
+  keyframes,
+  Badge,
 } from "@mantine/core";
+import {
+  IconSearch,
+  IconChevronLeft,
+  IconChevronRight,
+  IconRocket,
+  IconCheck,
+  IconX,
+  IconClock,
+} from "@tabler/icons-react";
 
 const PAGE_SIZE = 12;
 
+// Glassmorphism pulse animation for hover effect
+const glassPulse = keyframes`
+  0%, 100% { background-color: rgba(255, 255, 255, 0.1); }
+  50% { background-color: rgba(255, 255, 255, 0.15); }
+`;
+
+// Skeleton loader card with glass effect
 function SkeletonCard() {
   const theme = useMantineTheme();
   return (
     <Paper
-      shadow="sm"
-      radius="md"
+      shadow="xl"
+      radius="lg"
       p="md"
       withBorder
       sx={{
-        height: 140,
+        height: 200,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        backgroundColor:
-          theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.white,
+        background:
+          theme.colorScheme === "dark"
+            ? `rgba(255, 255, 255, 0.05)`
+            : `rgba(255, 255, 255, 0.3)`,
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+        border: `1px solid ${
+          theme.colorScheme === "dark"
+            ? "rgba(255,255,255,0.1)"
+            : "rgba(0,0,0,0.1)"
+        }`,
+        animation: "pulse 1.8s ease-in-out infinite",
+        borderRadius: 20,
       }}
     >
       <Box
         sx={{
-          height: 20,
-          width: "60%",
-          borderRadius: theme.radius.sm,
+          height: 28,
+          width: "70%",
+          borderRadius: 12,
           backgroundColor:
             theme.colorScheme === "dark"
               ? theme.colors.dark[5]
               : theme.colors.gray[3],
-          animation: "pulse 1.5s ease-in-out infinite",
         }}
       />
       <Box
         sx={{
-          height: 14,
-          width: "80%",
-          borderRadius: theme.radius.sm,
+          height: 18,
+          width: "85%",
+          borderRadius: 12,
           backgroundColor:
             theme.colorScheme === "dark"
               ? theme.colors.dark[5]
               : theme.colors.gray[3],
-          animation: "pulse 1.5s ease-in-out infinite",
+          marginTop: 16,
         }}
       />
       <Box
         sx={{
-          height: 14,
-          width: "40%",
-          borderRadius: theme.radius.sm,
+          height: 18,
+          width: "50%",
+          borderRadius: 12,
           backgroundColor:
             theme.colorScheme === "dark"
               ? theme.colors.dark[5]
               : theme.colors.gray[3],
-          animation: "pulse 1.5s ease-in-out infinite",
+          marginTop: 12,
         }}
       />
       <style>
@@ -83,6 +113,47 @@ function SkeletonCard() {
       </style>
     </Paper>
   );
+}
+
+// Helper to get launch status badge
+function LaunchStatusBadge({ launch }) {
+  if (launch.upcoming) {
+    return (
+      <Badge
+        color="cyan"
+        variant="light"
+        leftSection={<IconClock size={14} />}
+        sx={{ fontWeight: 700 }}
+      >
+        Upcoming
+      </Badge>
+    );
+  }
+  if (launch.success === true) {
+    return (
+      <Badge
+        color="teal"
+        variant="light"
+        leftSection={<IconCheck size={14} />}
+        sx={{ fontWeight: 700 }}
+      >
+        Success
+      </Badge>
+    );
+  }
+  if (launch.success === false) {
+    return (
+      <Badge
+        color="red"
+        variant="light"
+        leftSection={<IconX size={14} />}
+        sx={{ fontWeight: 700 }}
+      >
+        Failed
+      </Badge>
+    );
+  }
+  return null;
 }
 
 export default function ResourceList() {
@@ -134,11 +205,31 @@ export default function ResourceList() {
   const pageNumbers = getPageNumbers(currentPage, totalPages, maxPageButtons);
 
   return (
-    <Container size="lg" my="xl" px={{ base: "sm", md: "lg" }}>
-      <Paper shadow="xl" radius="md" p="xl" withBorder mt={90}>
+    <Container
+      size="lg"
+      my="xl"
+      px={{ base: "sm", md: "lg" }}
+      sx={{ paddingTop: 80, paddingBottom:80 }} // Use paddingTop instead of marginTop
+    >
+      <Paper
+        shadow="xl"
+        radius="lg"
+        p="xl"
+        withBorder
+        sx={{
+          background:
+            theme.colorScheme === "dark"
+              ? "rgba(20, 20, 40, 0.75)"
+              : "rgba(255, 255, 255, 0.85)",
+          borderRadius: 20,
+          border: `1px solid ${theme.colors.indigo[5]}`,
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+        }}
+      >
         <Group
           position="apart"
-          mb="md"
+          mb="lg"
           align="flex-end"
           spacing="md"
           noWrap={false}
@@ -148,7 +239,12 @@ export default function ResourceList() {
             order={2}
             weight={900}
             color={theme.colors.indigo[7]}
-            sx={{ flex: "1 1 100%", marginBottom: 8, minWidth: 0 }}
+            sx={{
+              flex: "1 1 100%",
+              marginBottom: 8,
+              minWidth: 0,
+              letterSpacing: 1.5,
+            }}
           >
             SpaceX Launches
           </Title>
@@ -165,14 +261,28 @@ export default function ResourceList() {
                 setPage(1);
               }}
               size="md"
-              sx={{ flex: "1 1 auto", minWidth: 0, maxWidth: 400 }}
+              sx={{ flex: "1 1 auto", minWidth: 0, maxWidth: 420 }}
               aria-label="Search launches by name"
               radius="md"
               icon={
                 isLoading ? (
                   <Loader size="xs" color={theme.colors.indigo[6]} />
-                ) : null
+                ) : (
+                  <IconSearch
+                    size={18}
+                    stroke={1.5}
+                    color={theme.colors.indigo[6]}
+                  />
+                )
               }
+              styles={{
+                input: {
+                  fontWeight: 600,
+                  fontSize: 16,
+                  color:
+                    theme.colorScheme === "dark" ? theme.white : theme.black,
+                },
+              }}
             />
             <Button
               onClick={() => {
@@ -184,6 +294,9 @@ export default function ResourceList() {
               aria-label="Search launches"
               loading={isLoading}
               sx={{ flex: "0 0 auto", marginTop: 4 }}
+              color="indigo"
+              variant="gradient"
+              gradient={{ from: "indigo", to: "cyan", deg: 45 }}
             >
               Search
             </Button>
@@ -193,7 +306,7 @@ export default function ResourceList() {
         {isLoading ? (
           <SimpleGrid
             cols={3}
-            spacing="lg"
+            spacing="xl"
             breakpoints={[{ maxWidth: "sm", cols: 1 }]}
           >
             {Array.from({ length: PAGE_SIZE }).map((_, idx) => (
@@ -203,55 +316,115 @@ export default function ResourceList() {
         ) : launches.length > 0 ? (
           <SimpleGrid
             cols={3}
-            spacing="lg"
+            spacing="xl"
             breakpoints={[{ maxWidth: "sm", cols: 1 }]}
           >
             {launches.map((launch) => (
               <Paper
                 key={launch.id}
-                shadow="sm"
-                radius="md"
+                shadow="lg"
+                radius="lg"
                 p="md"
                 withBorder
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  height: 180,
-                  transition: "box-shadow 0.3s ease",
+                  minHeight: 220, // minHeight instead of fixed height
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  cursor: "pointer",
+                  background:
+                    theme.colorScheme === "dark"
+                      ? "rgba(255, 255, 255, 0.1)"
+                      : "rgba(255, 255, 255, 0.9)",
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                  border: `1px solid ${
+                    theme.colorScheme === "dark"
+                      ? "rgba(255,255,255,0.15)"
+                      : "rgba(0,0,0,0.1)"
+                  }`,
+                  borderRadius: 20,
                   "&:hover": {
-                    boxShadow: theme.shadows.md,
+                    transform: "translateY(-10px) scale(1.04)",
+                    boxShadow: theme.shadows.xl,
+                    animation: `${glassPulse} 3s ease-in-out infinite`,
+                  },
+                  // Responsive flex direction for small screens
+                  [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+                    minHeight: "auto",
+                    flexDirection: "column",
                   },
                 }}
+                component={Link}
+                to={`/launch/${launch.id}`}
+                aria-label={`View details for ${launch.name}`}
               >
-                <Stack spacing={6} mb="md" style={{ flexGrow: 1 }}>
-                  <Text
-                    weight={700}
-                    color={theme.colors.indigo[7]}
-                    size="lg"
-                    lineClamp={1}
+                <Stack spacing={8} mb="md" sx={{ flexGrow: 1, minHeight: 0 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      minWidth: 0,
+                      marginBottom: 8,
+                    }}
                   >
-                    {launch.name}
-                  </Text>
-                  <Text color="dimmed" size="sm">
+                    <Text
+                      weight={700}
+                      color={theme.colors.indigo[7]}
+                      size="xl"
+                      lineClamp={1}
+                      sx={{
+                        letterSpacing: 0.5,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      {launch.name}
+                    </Text>
+                    <Box sx={{ marginTop: 4 }}>
+                      <LaunchStatusBadge launch={launch} />
+                    </Box>
+                  </Box>
+                  <Text color="dimmed" size="sm" weight={600}>
                     {new Date(launch.date_utc).toLocaleDateString(undefined, {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
                     })}
                   </Text>
-                  <Text color="gray" size="sm" lineClamp={3}>
+                  <Text
+                    color="gray"
+                    size="sm"
+                    sx={{
+                      fontStyle: "italic",
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 4,
+                      WebkitBoxOrient: "vertical",
+                      textOverflow: "ellipsis",
+                      minHeight: 72,
+                    }}
+                  >
                     {launch.details || "No details available."}
                   </Text>
                 </Stack>
                 <Button
-                  component={Link}
-                  to={`/launch/${launch.id}`}
-                  variant="light"
-                  color="indigo"
+                  variant="gradient"
+                  gradient={{ from: "indigo", to: "cyan", deg: 45 }}
                   radius="md"
                   size="sm"
-                  aria-label={`View details for ${launch.name}`}
+                  leftIcon={<IconRocket size={16} />}
+                  sx={{
+                    alignSelf: "flex-start",
+                    marginTop: "auto", // push button to bottom if space available
+                    [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+                      width: "100%",
+                    },
+                  }}
                 >
                   View Details
                 </Button>
@@ -260,13 +433,13 @@ export default function ResourceList() {
           </SimpleGrid>
         ) : (
           <Center py="xl">
-            <Text color="dimmed" italic>
+            <Text color="dimmed" italic size="lg">
               No launches found.
             </Text>
           </Center>
         )}
 
-        {/*pgno*/}
+        {/* Pagination */}
         <Group
           position="center"
           mt="xl"
@@ -274,35 +447,33 @@ export default function ResourceList() {
           noWrap={false}
           sx={{ flexWrap: "wrap", justifyContent: "center" }}
         >
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!hasPrevPage}
-            onClick={() => setPage(prevPage)}
-            aria-label="Previous page"
-            radius="xl"
-            sx={{ marginBottom: 4 }}
-          >
-            Previous
-          </Button>
+          <Tooltip label="Previous page" withArrow>
+            <ActionIcon
+              variant="filled"
+              size="lg"
+              disabled={!hasPrevPage}
+              onClick={() => setPage(prevPage)}
+              aria-label="Previous page"
+              radius="xl"
+              color="indigo"
+              sx={{ marginBottom: 4 }}
+            >
+              <IconChevronLeft size={20} stroke={2} />
+            </ActionIcon>
+          </Tooltip>
 
           {pageNumbers[0] > 1 && (
             <>
               <Button
                 variant="subtle"
-                size="sm"
+                size="md"
                 onClick={() => setPage(1)}
                 aria-label="Page 1"
                 radius="xl"
-                sx={{ marginBottom: 4 }}
+                sx={{ marginBottom: 4, fontWeight: 700 }}
               >
                 1
               </Button>
-              {pageNumbers[0] > 2 && (
-                <Text size="sm" sx={{ marginBottom: 4 }}>
-                  ...
-                </Text>
-              )}
             </>
           )}
 
@@ -310,12 +481,19 @@ export default function ResourceList() {
             <Button
               key={pageNum}
               variant={currentPage === pageNum ? "filled" : "subtle"}
-              size="sm"
+              size="md"
               onClick={() => setPage(pageNum)}
               aria-current={currentPage === pageNum ? "page" : undefined}
               aria-label={`Page ${pageNum}`}
               radius="xl"
-              sx={{ marginBottom: 4 }}
+              sx={{
+                marginBottom: 4,
+                fontWeight: currentPage === pageNum ? 700 : 600,
+                color:
+                  currentPage === pageNum
+                    ? theme.white
+                    : theme.colors.indigo[7],
+              }}
             >
               {pageNum}
             </Button>
@@ -323,35 +501,34 @@ export default function ResourceList() {
 
           {pageNumbers[pageNumbers.length - 1] < totalPages && (
             <>
-              {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-                <Text size="sm" sx={{ marginBottom: 4 }}>
-                  ...
-                </Text>
-              )}
+
               <Button
                 variant="subtle"
-                size="sm"
+                size="md"
                 onClick={() => setPage(totalPages)}
                 aria-label={`Page ${totalPages}`}
                 radius="xl"
-                sx={{ marginBottom: 4 }}
+                sx={{ marginBottom: 4, fontWeight: 700 }}
               >
                 {totalPages}
               </Button>
             </>
           )}
 
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!hasNextPage}
-            onClick={() => setPage(nextPage)}
-            aria-label="Next page"
-            radius="xl"
-            sx={{ marginBottom: 4 }}
-          >
-            Next
-          </Button>
+          <Tooltip label="Next page" withArrow>
+            <ActionIcon
+              variant="filled"
+              size="lg"
+              disabled={!hasNextPage}
+              onClick={() => setPage(nextPage)}
+              aria-label="Next page"
+              radius="xl"
+              color="indigo"
+              sx={{ marginBottom: 4 }}
+            >
+              <IconChevronRight size={20} stroke={2} />
+            </ActionIcon>
+          </Tooltip>
         </Group>
       </Paper>
     </Container>

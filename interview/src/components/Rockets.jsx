@@ -17,7 +17,7 @@ import {
   Text,
   useMantineTheme,
   Box,
-  Loader, // <-- add this import
+  Loader,
 } from "@mantine/core";
 
 const PAGE_SIZE = 10;
@@ -80,8 +80,41 @@ export default function Rockets() {
 
   return (
     <Container size="lg" my="xl">
-      <Paper shadow="xl" radius="md" p="xl" withBorder mt={90}>
-        <Title order={2} mb="lg" weight={900} color={theme.colors.indigo[7]}>
+      <Paper
+        shadow="xl"
+        radius="md"
+        p="xl"
+        withBorder
+        mt={90}
+        sx={{
+          background:
+            theme.colorScheme === "dark"
+              ? "rgba(30, 30, 50, 0.85)"
+              : "rgba(255, 255, 255, 0.85)",
+          backdropFilter: "saturate(180%) blur(12px)",
+          WebkitBackdropFilter: "saturate(180%) blur(12px)",
+          boxShadow:
+            theme.colorScheme === "dark"
+              ? "0 8px 32px rgba(0, 0, 0, 0.7)"
+              : "0 8px 32px rgba(0, 0, 0, 0.1)",
+          border: `1px solid ${
+            theme.colorScheme === "dark"
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(0, 0, 0, 0.1)"
+          }`,
+        }}
+      >
+        <Title
+          order={2}
+          mb="lg"
+          weight={900}
+          sx={{
+            color: theme.colors.indigo[7],
+            letterSpacing: "0.05em",
+            textTransform: "uppercase",
+            WebkitFontSmoothing: "antialiased",
+          }}
+        >
           Rockets
         </Title>
 
@@ -93,7 +126,14 @@ export default function Rockets() {
               setSearch(e.currentTarget.value);
               setPage(1);
             }}
-            sx={{ flex: "1 1 300px", minWidth: 280 }}
+            sx={{
+              flex: "1 1 300px",
+              minWidth: 280,
+              "& input": {
+                fontWeight: 600,
+                fontSize: theme.fontSizes.md,
+              },
+            }}
             aria-label="Search rockets by name"
             radius="md"
             size="md"
@@ -108,6 +148,14 @@ export default function Rockets() {
             radius="md"
             aria-label="Search rockets"
             loading={isLoading}
+            sx={{
+              backgroundImage: `linear-gradient(90deg, ${theme.colors.indigo[6]}, ${theme.colors.indigo[8]})`,
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              "&:hover": {
+                backgroundImage: `linear-gradient(90deg, ${theme.colors.indigo[8]}, ${theme.colors.indigo[6]})`,
+              },
+            }}
           >
             Search
           </Button>
@@ -131,6 +179,7 @@ export default function Rockets() {
                   textTransform: "uppercase",
                   fontSize: theme.fontSizes.sm,
                   padding: "12px 16px",
+                  letterSpacing: "0.05em",
                 },
               },
               tbody: {
@@ -141,10 +190,13 @@ export default function Rockets() {
                       : theme.white,
                   borderRadius: theme.radius.md,
                   boxShadow: theme.shadows.xs,
-                  transition: "background-color 0.3s ease",
+                  transition:
+                    "background-color 0.3s ease, box-shadow 0.3s ease",
                   cursor: "pointer",
                   "&:hover": {
                     backgroundColor: theme.colors.indigo[0],
+                    boxShadow: theme.shadows.md,
+                    transform: "translateY(-2px)",
                   },
                 },
                 td: {
@@ -173,7 +225,11 @@ export default function Rockets() {
                 rockets.map((rocket) => (
                   <tr key={rocket.id}>
                     <td
-                      style={{ fontWeight: 700, color: theme.colors.indigo[7] }}
+                      style={{
+                        fontWeight: 700,
+                        color: theme.colors.indigo[7],
+                        letterSpacing: "0.03em",
+                      }}
                     >
                       {rocket.name}
                     </td>
@@ -184,6 +240,11 @@ export default function Rockets() {
                         variant="light"
                         size="sm"
                         radius="xl"
+                        sx={{
+                          fontWeight: 700,
+                          letterSpacing: "0.05em",
+                          textTransform: "uppercase",
+                        }}
                       >
                         {rocket.active ? "Yes" : "No"}
                       </Badge>
@@ -195,6 +256,14 @@ export default function Rockets() {
                         size="sm"
                         onClick={() => navigate(`/rocket/${rocket.id}`)}
                         aria-label={`View details for ${rocket.name}`}
+                        sx={{
+                          fontWeight: 700,
+                          letterSpacing: "0.05em",
+                          transition: "color 0.3s ease",
+                          "&:hover": {
+                            color: theme.colors.indigo[8],
+                          },
+                        }}
                       >
                         View Details
                       </Button>
@@ -216,7 +285,7 @@ export default function Rockets() {
           </Table>
         </ScrollArea>
 
-        <Group position="center" mt="xl">
+        <Group position="center" mt="xl" spacing="md">
           <Button
             variant="outline"
             size="sm"
@@ -224,6 +293,21 @@ export default function Rockets() {
             onClick={() => setPage(prevPage)}
             aria-label="Previous page"
             radius="xl"
+            sx={{
+              borderColor: theme.colors.indigo[6],
+              color: theme.colors.indigo[6],
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              transition: "all 0.3s ease",
+              "&:hover:not(:disabled)": {
+                backgroundColor: theme.colors.indigo[6],
+                color: theme.white,
+              },
+              "&:disabled": {
+                opacity: 0.5,
+                cursor: "not-allowed",
+              },
+            }}
           >
             Previous
           </Button>
@@ -246,6 +330,21 @@ export default function Rockets() {
             onClick={() => setPage(nextPage)}
             aria-label="Next page"
             radius="xl"
+            sx={{
+              borderColor: theme.colors.indigo[6],
+              color: theme.colors.indigo[6],
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              transition: "all 0.3s ease",
+              "&:hover:not(:disabled)": {
+                backgroundColor: theme.colors.indigo[6],
+                color: theme.white,
+              },
+              "&:disabled": {
+                opacity: 0.5,
+                cursor: "not-allowed",
+              },
+            }}
           >
             Next
           </Button>
