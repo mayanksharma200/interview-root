@@ -33,13 +33,11 @@ import {
 
 const PAGE_SIZE = 12;
 
-// Glassmorphism pulse animation for hover effect
 const glassPulse = keyframes`
   0%, 100% { background-color: rgba(255, 255, 255, 0.1); }
   50% { background-color: rgba(255, 255, 255, 0.15); }
 `;
 
-// Skeleton loader card with glass effect
 function SkeletonCard() {
   const theme = useMantineTheme();
   return (
@@ -115,7 +113,6 @@ function SkeletonCard() {
   );
 }
 
-// Helper to get launch status badge
 function LaunchStatusBadge({ launch }) {
   if (launch.upcoming) {
     return (
@@ -209,7 +206,7 @@ export default function ResourceList() {
       size="lg"
       my="xl"
       px={{ base: "sm", md: "lg" }}
-      sx={{ paddingTop: 80, paddingBottom:80 }} // Use paddingTop instead of marginTop
+      sx={{ paddingTop: 80, paddingBottom:80 }}
     >
       <Paper
         shadow="xl"
@@ -330,7 +327,7 @@ export default function ResourceList() {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  minHeight: 220, // minHeight instead of fixed height
+                  minHeight: 220,
                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
                   cursor: "pointer",
                   background:
@@ -350,7 +347,6 @@ export default function ResourceList() {
                     boxShadow: theme.shadows.xl,
                     animation: `${glassPulse} 3s ease-in-out infinite`,
                   },
-                  // Responsive flex direction for small screens
                   [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
                     minHeight: "auto",
                     flexDirection: "column",
@@ -420,7 +416,7 @@ export default function ResourceList() {
                   leftIcon={<IconRocket size={16} />}
                   sx={{
                     alignSelf: "flex-start",
-                    marginTop: "auto", // push button to bottom if space available
+                    marginTop: "auto",
                     [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
                       width: "100%",
                     },
@@ -439,7 +435,6 @@ export default function ResourceList() {
           </Center>
         )}
 
-        {/* Pagination */}
         <Group
           position="center"
           mt="xl"

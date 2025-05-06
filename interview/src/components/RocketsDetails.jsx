@@ -263,7 +263,6 @@ export default function RocketDetail() {
             sx={{
               fontFamily: "'Poppins', sans-serif",
               letterSpacing: 2,
-              // Removed textShadow for no glow effect
             }}
           >
             {rocket.name}
@@ -276,7 +275,6 @@ export default function RocketDetail() {
               height: 400,
               borderRadius: theme.radius.md,
               overflow: "hidden",
-              // Removed glow boxShadow
               boxShadow:
                 theme.colorScheme === "dark"
                   ? "0 12px 40px rgba(0, 0, 0, 0.7)"

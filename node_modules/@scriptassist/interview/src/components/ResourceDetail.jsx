@@ -32,8 +32,8 @@ const fadeInScale = {
 const glassCardStyle = (theme) => ({
   background:
     theme.colorScheme === "dark"
-      ? "rgba(20, 20, 30, 0.75)" // original dark bg
-      : "rgba(255, 255, 255, 0.85)", // original light bg
+      ? "rgba(20, 20, 30, 0.75)"
+      : "rgba(255, 255, 255, 0.85)",
   backdropFilter: "blur(16px)",
   WebkitBackdropFilter: "blur(16px)",
   borderRadius: 24,

@@ -23,9 +23,8 @@ const useStyles = createStyles((theme) => ({
     zIndex: 1100,
     background:
       theme.colorScheme === "dark"
-        ? "rgba(20, 20, 40, 0.95)" // Increased opacity, no blur
+        ? "rgba(20, 20, 40, 0.95)"
         : "rgba(255, 255, 255, 0.95)",
-    // Removed backdropFilter and WebkitBackdropFilter to remove blur effect
     boxShadow:
       theme.colorScheme === "dark"
         ? "0 4px 30px rgba(0, 0, 0, 0.7)"
@@ -39,7 +38,7 @@ const useStyles = createStyles((theme) => ({
   container: {
     height: 60,
     display: "flex",
-    alignItems: "center", // vertical center alignment
+    alignItems: "center",
     justifyContent: "space-between",
   },
 
@@ -51,8 +50,8 @@ const useStyles = createStyles((theme) => ({
     fontSize: 28,
     background:
       theme.colorScheme === "dark"
-        ? "linear-gradient(45deg, #8a6bc1, #c1a9e0)" // brighter purple gradient
-        : "linear-gradient(45deg, #4f6ef7, #5a4ba2)", // deeper blue gradient
+        ? "linear-gradient(45deg, #8a6bc1, #c1a9e0)"
+        : "linear-gradient(45deg, #4f6ef7, #5a4ba2)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
     userSelect: "none",
@@ -178,7 +177,7 @@ const useStyles = createStyles((theme) => ({
         ? theme.colors.indigo[2]
         : theme.colors.indigo[8],
     transition: "all 0.4s ease",
-    transformOrigin: "top", // important for scaleY animation
+    transformOrigin: "top",
   },
 
   mobileLink: {
