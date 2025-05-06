@@ -6,11 +6,20 @@
     "interview",
     "api"
   ],
-"scripts": {
-  "build": "npx --ignore-existing concurrently \"npm run build --workspace interview\" \"npm run build --workspace api || echo 'No build for api'\""
-},
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:backend dev:interview",
+    "dev:backend": "npm run dev --workspace backend",
+    "dev:interview": "npm run dev --workspace interview",
+    "start": "npm-run-all --parallel start:backend start:interview",
+    "start:backend": "npm start --workspace backend",
+    "start:interview": "npm run preview --workspace interview",
+    "build": "npm-run-all --parallel build:interview build:api",
+    "build:interview": "npm run build --workspace interview",
+    "build:api": "npm run build --workspace api || echo 'No build for api'"
+  },
   "devDependencies": {
     "concurrently": "^7.6.0",
+    "npm-run-all": "^4.1.5",
     "shx": "^0.4.0"
   },
   "dependencies": {
