@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchLaunches } from "../api/spacex";
 import { Link } from "react-router-dom";
@@ -157,8 +157,9 @@ export default function ResourceList() {
   const theme = useMantineTheme();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
-  const { data, isLoading, error, refetch } = useQuery(
+  const { data, isLoading, isFetching, error, refetch } = useQuery(
     ["launches", search, page],
     () =>
       fetchLaunches(
@@ -168,6 +169,14 @@ export default function ResourceList() {
       ),
     { keepPreviousData: true }
   );
+
+  useEffect(() => {
+    if (isFetching && !isLoading) {
+      setIsPageLoading(true);
+    } else {
+      setIsPageLoading(false);
+    }
+  }, [isFetching, isLoading]);
 
   const launches = data?.docs || [];
   const {
@@ -206,7 +215,7 @@ export default function ResourceList() {
       size="lg"
       my="xl"
       px={{ base: "sm", md: "lg" }}
-      sx={{ paddingTop: 80, paddingBottom:80 }}
+      sx={{ paddingTop: 80, paddingBottom: 80 }}
     >
       <Paper
         shadow="xl"
@@ -300,7 +309,7 @@ export default function ResourceList() {
           </Group>
         </Group>
 
-        {isLoading ? (
+        {isLoading || isPageLoading ? (
           <SimpleGrid
             cols={3}
             spacing="xl"
@@ -496,7 +505,6 @@ export default function ResourceList() {
 
           {pageNumbers[pageNumbers.length - 1] < totalPages && (
             <>
-
               <Button
                 variant="subtle"
                 size="md"

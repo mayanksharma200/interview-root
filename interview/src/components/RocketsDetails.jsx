@@ -16,6 +16,77 @@ import {
   Box,
 } from "@mantine/core";
 
+
+function SkeletonRocketDetail() {
+  const theme = useMantineTheme();
+
+  const skeletonVariants = {
+    pulse: {
+      opacity: [0.6, 1, 0.6],
+      transition: {
+        duration: 1.5,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  return (
+    <Stack spacing="md" style={{ marginTop: 20 }}>
+      <motion.div
+        style={{
+          height: 48,
+          width: "33%",
+          borderRadius: theme.radius.sm,
+          backgroundColor: theme.colors.gray[3],
+        }}
+        variants={skeletonVariants}
+        animate="pulse"
+      />
+      <motion.div
+        style={{
+          height: 384,
+          width: "100%",
+          borderRadius: theme.radius.md,
+          backgroundColor: theme.colors.gray[3],
+        }}
+        variants={skeletonVariants}
+        animate="pulse"
+      />
+      <motion.div
+        style={{
+          height: 24,
+          width: "100%",
+          borderRadius: theme.radius.sm,
+          backgroundColor: theme.colors.gray[3],
+        }}
+        variants={skeletonVariants}
+        animate="pulse"
+      />
+      <motion.div
+        style={{
+          height: 24,
+          width: "100%",
+          borderRadius: theme.radius.sm,
+          backgroundColor: theme.colors.gray[3],
+        }}
+        variants={skeletonVariants}
+        animate="pulse"
+      />
+      <motion.div
+        style={{
+          height: 24,
+          width: "66%",
+          borderRadius: theme.radius.sm,
+          backgroundColor: theme.colors.gray[3],
+        }}
+        variants={skeletonVariants}
+        animate="pulse"
+      />
+    </Stack>
+  );
+}
+
 export default function RocketDetail() {
   const theme = useMantineTheme();
   const { id } = useParams();
@@ -63,65 +134,14 @@ export default function RocketDetail() {
     exit: { opacity: 0, transition: { duration: 0.4 } },
   };
 
-  if (isLoading)
-    return (
-      <Container size="md" my="xl">
-        <Paper shadow="xl" radius="md" p="xl" withBorder>
-          <Stack spacing="md">
-            <motion.div
-              style={{
-                height: 48,
-                width: "33%",
-                borderRadius: theme.radius.sm,
-                backgroundColor: theme.colors.gray[3],
-              }}
-              variants={skeletonVariants}
-              animate="pulse"
-            />
-            <motion.div
-              style={{
-                height: 384,
-                width: "100%",
-                borderRadius: theme.radius.md,
-                backgroundColor: theme.colors.gray[3],
-              }}
-              variants={skeletonVariants}
-              animate="pulse"
-            />
-            <motion.div
-              style={{
-                height: 24,
-                width: "100%",
-                borderRadius: theme.radius.sm,
-                backgroundColor: theme.colors.gray[3],
-              }}
-              variants={skeletonVariants}
-              animate="pulse"
-            />
-            <motion.div
-              style={{
-                height: 24,
-                width: "100%",
-                borderRadius: theme.radius.sm,
-                backgroundColor: theme.colors.gray[3],
-              }}
-              variants={skeletonVariants}
-              animate="pulse"
-            />
-            <motion.div
-              style={{
-                height: 24,
-                width: "66%",
-                borderRadius: theme.radius.sm,
-                backgroundColor: theme.colors.gray[3],
-              }}
-              variants={skeletonVariants}
-              animate="pulse"
-            />
-          </Stack>
-        </Paper>
-      </Container>
-    );
+if (isLoading)
+  return (
+    <Container size="md" my="xl">
+      <Paper shadow="xl" radius="md" p="xl" withBorder>
+        <SkeletonRocketDetail />
+      </Paper>
+    </Container>
+  );
 
   if (error)
     return (

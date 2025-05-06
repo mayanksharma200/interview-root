@@ -22,7 +22,7 @@ const MotionButton = motion(Button);
 
 export default function LoginForm() {
   const login = useAuthStore((state) => state.login);
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("admin@spacex.com");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);

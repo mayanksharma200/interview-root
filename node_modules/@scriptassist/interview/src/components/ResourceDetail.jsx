@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchLaunchById, fetchRocketById } from "../api/spacex";
@@ -17,6 +17,8 @@ import {
   Anchor,
   useMantineTheme,
   Divider,
+  Skeleton,
+  Box,
 } from "@mantine/core";
 
 const fadeInScale = {
@@ -28,6 +30,19 @@ const fadeInScale = {
     transition: { duration: 0.7, ease: "easeOut" },
   },
 };
+
+function SkeletonDetail() {
+  return (
+    <Stack spacing="md" style={{ marginTop: 100, paddingBottom: 80 }}>
+      <Skeleton height={40} width="60%" radius="md" />
+      <Skeleton height={24} width="30%" radius="xl" />
+      <Skeleton height={20} width="40%" radius="sm" />
+      <Skeleton height={100} radius="md" />
+      <Skeleton height={30} width="50%" radius="xl" />
+      <Skeleton height={150} radius="md" />
+    </Stack>
+  );
+}
 
 const glassCardStyle = (theme) => ({
   background:
@@ -138,12 +153,19 @@ export default function ResourceDetail() {
     { enabled: !!rocketId }
   );
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   if (loadingLaunch)
     return (
-      <Container size="sm" my="xl" style={{ height: 256 }}>
-        <Group position="center" align="center" style={{ height: "100%" }}>
-          <Loader size="xl" color={theme.colors.indigo[6]} />
-        </Group>
+      <Container
+        size="md"
+        my="xl"
+        px="md"
+        style={{ marginTop: 100, paddingBottom: 80 }}
+      >
+        <SkeletonDetail />
       </Container>
     );
 
@@ -169,7 +191,12 @@ export default function ResourceDetail() {
     );
 
   return (
-    <Container size="md" my="xl" px="md" style={{ marginTop: 100, paddingBottom:80 }}>
+    <Container
+      size="md"
+      my="xl"
+      px="md"
+      style={{ marginTop: 100, paddingBottom: 80 }}
+    >
       <motion.div initial="hidden" animate="visible" variants={fadeInScale}>
         <Paper sx={glassCardStyle(theme)} withBorder>
           {/* Breadcrumb */}
@@ -224,8 +251,18 @@ export default function ResourceDetail() {
             </Text>
           </Group>
 
-          {/* Title and Status */}
-          <Group position="apart" align="center" mb="md" noWrap>
+          <Group
+            mb="md"
+            sx={(theme) => ({
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              [theme.fn.smallerThan("sm")]: {
+                flexDirection: "column",
+                alignItems: "flex-start",
+              },
+            })}
+          >
             <Title
               order={2}
               weight={900}
@@ -241,7 +278,16 @@ export default function ResourceDetail() {
             >
               {launch.name}
             </Title>
-            <LaunchStatusBadge launch={launch} />
+            <Box
+              sx={(theme) => ({
+                [theme.fn.smallerThan("sm")]: {
+                  marginTop: theme.spacing.sm,
+                  marginBottom: theme.spacing.sm,
+                },
+              })}
+            >
+              <LaunchStatusBadge launch={launch} />
+            </Box>
           </Group>
 
           {/* Date */}
@@ -272,7 +318,6 @@ export default function ResourceDetail() {
             </time>
           </Text>
 
-          {/* Launch Details */}
           <Stack spacing="xs" mb="xl">
             <Title
               order={4}
@@ -308,7 +353,6 @@ export default function ResourceDetail() {
 
           <Divider my="xl" variant="dashed" />
 
-          {/* Rocket Details Section */}
           <AnimatePresence>
             {loadingRocket ? (
               <motion.div

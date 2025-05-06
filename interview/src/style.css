@@ -9,3 +9,295 @@ body, html, #root {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/*navbarStyles*/
+.navbar-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1100;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body[data-theme="dark"] .navbar-header {
+  background: rgba(20, 20, 40, 0.95);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-container {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  font-size: 28px;
+  background: linear-gradient(45deg, #4f6ef7, #5a4ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+body[data-theme="dark"] .navbar-logo {
+  background: linear-gradient(45deg, #8a6bc1, #c1a9e0);
+}
+
+.navbar-navLinks {
+  display: flex;
+  gap: 24px;
+}
+
+@media (max-width: 767px) {
+  .navbar-navLinks {
+    display: none;
+  }
+}
+
+.navbar-link {
+  position: relative;
+  font-weight: 700;
+  font-size: 16px;
+  color: #4c51bf;
+  text-decoration: none;
+  padding-bottom: 4px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+body[data-theme="dark"] .navbar-link {
+  color: #a3bffa;
+}
+
+.navbar-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+body[data-theme="dark"] .navbar-link::after {
+  background: linear-gradient(90deg, #6b5b95, #b8a9c9);
+}
+
+.navbar-link:hover {
+  color: #5a67d8;
+}
+
+body[data-theme="dark"] .navbar-link:hover {
+  color: #818cf8;
+}
+
+.navbar-link:hover::after {
+  width: 100%;
+}
+
+.navbar-link:focus-visible {
+  outline-offset: 4px;
+  outline: 2px solid #5a67d8;
+}
+
+body[data-theme="dark"] .navbar-link:focus-visible {
+  outline: 2px solid #818cf8;
+}
+
+.navbar-activeLink {
+  color: #5a67d8;
+  font-weight: 800;
+}
+
+body[data-theme="dark"] .navbar-activeLink {
+  color: #818cf8;
+}
+
+.navbar-activeLink::after {
+  width: 100%;
+}
+
+.navbar-burger {
+  display: none;
+  color: #4c51bf;
+  transition: color 0.3s ease;
+}
+
+body[data-theme="dark"] .navbar-burger {
+  color: #a3bffa;
+}
+
+.navbar-burger:hover {
+  color: #5a67d8;
+}
+
+body[data-theme="dark"] .navbar-burger:hover {
+  color: #818cf8;
+}
+
+@media (max-width: 767px) {
+  .navbar-burger {
+    display: block;
+  }
+}
+
+.navbar-mobileMenu {
+  position: fixed;
+  top: 60px;
+  left: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #4c51bf;
+  transition: all 0.4s ease;
+  transform-origin: top;
+}
+
+body[data-theme="dark"] .navbar-mobileMenu {
+  background-color: rgba(30, 30, 60, 0.85);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a3bffa;
+}
+
+.navbar-mobileLink {
+  display: block;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 18px;
+  color: #4c51bf;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+body[data-theme="dark"] .navbar-mobileLink {
+  color: #a3bffa;
+}
+
+.navbar-mobileLink:hover {
+  background-color: rgba(102, 126, 234, 0.15);
+  color: #5a67d8;
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
+}
+
+body[data-theme="dark"] .navbar-mobileLink:hover {
+  background-color: rgba(75, 0, 130, 0.6);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(138, 107, 193, 0.7);
+}
+
+.navbar-mobileLink:focus-visible {
+  outline-offset: 4px;
+  outline: 2px solid #5a67d8;
+}
+
+body[data-theme="dark"] .navbar-mobileLink:focus-visible {
+  outline: 2px solid #818cf8;
+}
+
+.navbar-mobileActiveLink {
+  background-color: #667eea;
+  color: #fff;
+  box-shadow: 0 0 12px 2px rgba(102, 126, 234, 0.7);
+  transform: scale(1.05);
+}
+
+body[data-theme="dark"] .navbar-mobileActiveLink {
+  background-color: #8a6bc1;
+  box-shadow: 0 0 12px 2px rgba(138, 107, 193, 0.8);
+}
+
+/*logoutButton*/
+.navbar-logoutButton {
+  font-weight: 700;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background-image: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  transition: all 0.4s ease;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.7);
+  cursor: pointer;
+}
+
+body[data-theme="dark"] .navbar-logoutButton {
+  background-image: linear-gradient(135deg, #8a6bc1, #b8a9c9);
+  box-shadow: 0 4px 15px rgba(138, 107, 193, 0.7);
+}
+
+.navbar-logoutButton:hover {
+  background-image: linear-gradient(135deg, #764ba2, #667eea);
+  box-shadow: 0 6px 20px rgba(118, 75, 162, 0.9);
+  transform: scale(1.05);
+  color: #fff;
+  border-color: transparent;
+}
+
+body[data-theme="dark"] .navbar-logoutButton:hover {
+  background-image: linear-gradient(135deg, #b8a9c9, #8a6bc1);
+  box-shadow: 0 6px 20px rgba(184, 169, 201, 0.9);
+}
+
+.navbar-logoutButton:focus-visible {
+  outline-offset: 4px;
+  outline: 2px solid #5a67d8;
+}
+
+body[data-theme="dark"] .navbar-logoutButton:focus-visible {
+  outline: 2px solid #818cf8;
+}
+
+.navbar-logoutGroup {
+  display: flex;
+  align-items: center;
+}
+
+
+.navbar-logoutGroup.navbar-logoutDesktop {
+  display: flex;
+}
+
+@media (max-width: 767px) {
+  .navbar-logoutGroup.navbar-logoutDesktop {
+    display: none;
+  }
+}
+
+.navbar-logoutButton.navbar-logoutMobile {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .navbar-logoutButton.navbar-logoutMobile {
+    display: block;
+  }
+}
